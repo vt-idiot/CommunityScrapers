@@ -40,6 +40,23 @@ def lookup_scene(id):
         tag_names.append('Censored')
     else:
         tag_names.append('Virtual Reality')
+    if row[2] == "NaughtyAmerica VR":
+        navrstudios = ["2 chicks same time", "after school", "american daydreams", "ass masterpiece", "big cock bully", "classroom", "dirty wives club", "fans", "fuck my ass", "housewife 1 on 1", "i have a wife", "lesbian girl on girl", "my dad's hot girlfriend", "my daughter's hot friend", "my first sex teacher", "my friend's hot girl", "my friend's hot mom", "my girl loves anal", "my girlfriend", "my girlfriend's busty friend", "my naughty massage", "my sister's hot friend", "my wife's hot friend", "naughty athletics", "naughty bookworms", "naughty office", "naughty rich girls", "naughty weddings", "neighbor affair", "party girls", "perfect fucking strangers", "pse porn star experience", "real pornstars vr", "seduced by a cougar", "slut step mom", "spring break", "summer vacation", "super sluts", "t&a", "thundercock", "tonight's fuck", "tonight's girlfriend classic", "true sex stories"]
+        for tag in tag_names:
+            if tag in navrstudios:
+                res['studio'] = {"name": tag}
+            else:
+                navrremaps = {
+                    "naughty america": "Naughty America VR",
+                    "dorm room": "The Dorm Room",
+                    "dressing room": "The Dressing Room",
+                    "gym": "The Gym",
+                    "office": "The Office",
+                    "spa": "The Spa",
+                    "tonight's girlfriend": "Tonight's Girlfriend Classic"
+                }
+                if tag in navrremaps:
+                    res['studio'] = {"name": navrremaps[tag]}
     res['tags'] = [{"name": x} for x in tag_names]
     c.execute("SELECT actors.name FROM scene_cast,actors WHERE actors.id=scene_cast.actor_id AND scene_cast.scene_id=? ;",(id,))
     row = c.fetchall()
