@@ -23,18 +23,24 @@ XBVR_HOST='http://192.168.0.35:9999'
    '''
 def lookup_scene(id):
     c=conn.cursor()
-    c.execute('SELECT title,synopsis,site,cover_url,scene_url,date(release_date, "localtime") FROM scenes WHERE id=?',(id,))
+    c.execute('SELECT title,synopsis,site,cover_url,scene_url,date(release_date, "localtime"),scene_id FROM scenes WHERE id=?',(id,))
     row=c.fetchone()
     res={}
     res['title']=row[0]
     res['details']=row[1]
-    res['studio']={"name":row[2]}
+    res['studio']={"name": row[2]}
     res['image']=row[3]
     res['url']=row[4]
     res['date']=row[5]
-    c.execute("SELECT tags.name FROM scene_tags,tags WHERE scene_tags.tag_id=tags.id AND scene_tags.scene_id=? ;",(id,))
-    row = c.fetchall()
-    res['tags']=[{"name":x[0]} for x in row]
+    res['code']=row[6]
+    tags = c.execute("SELECT tags.name FROM scene_tags, tags WHERE scene_tags.tag_id=tags.id AND scene_tags.scene_id=? ;", (id,))
+    tag_names = [x[0] for x in tags]
+    if 'javr' in tag_names:
+        tag_names.append('JAV')
+        tag_names.append('Censored')
+    else:
+        tag_names.append('Virtual Reality')
+    res['tags'] = [{"name": x} for x in tag_names]
     c.execute("SELECT actors.name FROM scene_cast,actors WHERE actors.id=scene_cast.actor_id AND scene_cast.scene_id=? ;",(id,))
     row = c.fetchall()
     res['performers']=[{"name":x[0]} for x in row]
